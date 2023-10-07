@@ -1,7 +1,7 @@
 # this file is  responsibale of the transformations of our data to JSON code
 
 from rest_framework import serializers
-from tickets.models import Guest, Opera, Reservation
+from tickets.models import Guest, Opera, Post, Reservation
 
 class OperaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,7 @@ class GuestSerializer(serializers.ModelSerializer):
         model = Guest
         fields = ['pk', 'reservation', 'name', 'mobile']
 
+class PostSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Post
+        fields = '__all__'

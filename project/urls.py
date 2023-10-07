@@ -20,6 +20,7 @@ from tickets import views
 
 
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import ObtainAuthToken
 
 router = DefaultRouter()  #for viewsets
 router.register('guest', views.UserViewSet_guest)
@@ -42,6 +43,9 @@ urlpatterns = [
     path('rest/UserViewSet_reservation/', include(router.urls)),
     path('search/Search_opera/', views.Search_opera),# use Postman app to search 
     path('search/new_reservation/', views.new_reservation),
-
+    path('api-auth', include('rest_framework.urls')),
+    path('api-token-auth', ObtainAuthToken.as_view()),
+    #path('post/generics', views.Post_list.as_view()),
+    path('post/generics/<int:pk>', views.Post_pk.as_view()),
 ]#there is no security in this urls !
 #this work is only for education!

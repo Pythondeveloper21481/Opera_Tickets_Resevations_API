@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse 
-from.models import Guest, Opera, Reservation
+from.models import Guest, Opera, Reservation, Post
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import OperaSerializer, GuestSerializer, ResevationSerializer
+from .serializers import OperaSerializer, GuestSerializer, ResevationSerializer, PostSerializer
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import mixins, generics
 from rest_framework import viewsets
-
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from .permissions import IsAuthorOrReadOnly 
 # Create your views here.
 # we will create some endpoints with methods
 #function based view without restframework no model query
@@ -150,11 +152,19 @@ class mixins_pk(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,mixins.Destro
 class generics_list(generics.ListCreateAPIView):
     queryset = Guest.objects.all()
     serializer_class = GuestSerializer
+    # authentication_classes= [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    authentication_classes= [TokenAuthentication]
+
 
 #Generics GET PUT and DELETE
 class generics_pk(generics.RetrieveUpdateDestroyAPIView):
     queryset = Guest.objects.all()
     serializer_class = GuestSerializer
+    # authentication_classes= [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    authentication_classes= [TokenAuthentication]
+
 
 #viewsets 
 #
@@ -198,5 +208,20 @@ def new_reservation(request):
     serializer = OperaSerializer(opera)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+#Post author editor
 
-#there is no security in this 
+class Post_pk(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthorOrReadOnly]
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
+
+
+
+
+
+
+
+
+#there is no security in this views
